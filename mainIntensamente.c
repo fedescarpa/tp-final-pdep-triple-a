@@ -3,6 +3,9 @@
 
 void convertir_recuerdo_en_pensamiento_central (NENA * const unaNena, RECUERDO * const unRecuerdo)
 {		list_add((unaNena->pensamientosCentrales), unRecuerdo);
+		int * x;
+		*x= 1;
+		unRecuerdo->esCentral= x;
 }
 
 
@@ -82,19 +85,21 @@ void asenta_un_recuerdo (NENA * const unaNena, RECUERDO * unRecuerdo)
 
 //Conocer los recuerdos recientes del día: estos son los últimos 5 recuerdos//
 
-bool ordenar_recuerdos_porfecha(void * dato1, void * dato2)
+bool ordenar_recuerdos_porfecha_ascendente(void * dato1, void * dato2)
 { RECUERDO * recuerdo1= dato1;
 	RECUERDO * recuerdo2= dato2;
 	return(recuerdo1->fecha > recuerdo2->fecha);
 }
 
-
-void ordenar_lista(t_list * listita)
-{(list_sort(listita,ordenar_recuerdos_porfecha));
+bool ordenar_recuerdos_porfecha_descendente(void * dato1, void * dato2)
+{ RECUERDO * recuerdo1= dato1;
+	RECUERDO * recuerdo2= dato2;
+	return(recuerdo1->fecha < recuerdo2->fecha);
 }
 
+
 t_list * recuerdos_recientes_deldia(NENA * const unaNena)
-{	ordenar_lista(unaNena->unPrimerRecuerdo);
+{	ordenar_lista_ascendente(unaNena->unPrimerRecuerdo);
 	return (list_take(unaNena->unPrimerRecuerdo, 5));
 }
 	
@@ -113,7 +118,7 @@ t_list * pensamientos_dificles_deexplicar(NENA * const unaNena)
 //DESCANSAR//
 //Saber si Riley niega un recuerdo//
 
- estado_deanimo_niega_unrecuerdo(char * emocionDominante, RECUERDO * unRecuerdo)
+bool estado_deanimo_niega_unrecuerdo(char * emocionDominante, RECUERDO * unRecuerdo)
  {	if (emocionDominante== "alegre")
  		{return(unRecuerdo->emocionDominanteInstante != "alegre"); }
  	else if(emocionDominante== "triste") 
@@ -150,14 +155,72 @@ void aplicar_proceso(NENA * const unaNena)
 
 void asentar_recuerdos( NENA * const unaNena)
 { 
-	}
-	
-	
-	
-void profundizar_recuerdos(NENA * const unaNena){
-	
-	
-	
-	
-	
 }
+	
+//ASENTAMIENTO SELECTIVO//
+bool texto_contiene(void * descripcion, char * palabra)
+{	char * point;
+	point= strstr(descripcion, palabra);
+	return(point != NULL);
+}
+
+void asentar_sicumple(NENA * const unaNena, RECUERDO * unRecuerdo, char * palabraClave)
+{	if(texto_contiene((unRecuerdo->descripcion), palabraClave))
+		{	asenta_un_recuerdo(unaNena, unRecuerdo);}
+}
+	
+//PROFUNDIZAR RECUERDOS//	
+void profundizar_recuerdos(NENA * const unaNena)
+{
+}
+
+void enviar_recuerdo_largo_plazo(NENA *const unaNena, RECUERDO * unRecuerdo)
+{ list_add(unaNena->memoriaLargoPlazo, unRecuerdo);}
+
+void profundizar_recuerdo(NENA * const unaNena, RECUERDO * unRecuerdo)
+{	int * x;
+	*x=1;
+	if((unRecuerdo->esCentral != x) && (!niega_un_recuerdo(unaNena, unRecuerdo)))
+		{ enviar_recuerdo_largo_plazo(unaNena, unRecuerdo);}
+}
+
+
+//CONTROL HORMONAL//
+
+void perder_pensamientos_centrales_antiguos(NENA * const unaNena, int valor)
+	{	int * posicion, contador=1;
+		*posicion=list_size(unaNena->unPrimerRecuerdo);
+		for(contador; contador <=3; contador++)
+		{	list_remove((unaNena->unPrimerRecuerdo), *posicion);
+			*posicion--;	
+		}
+	}
+
+/* FALTA COMPLETAR
+bool esta_en_largoplazo()
+bool recuerdo_repetido(NENA * const unaNena)
+{	return (list_any_satisfy(unaNena->pensamientosCentrales, esta_en_largoplazo));
+}
+*/
+
+/* FALTA TERMINAR TIENEN_LA_MISMA_EMOCION
+bool recuerdos_son_emocionalmente_iguales(NENA * const unaNena)
+{ return(list_all_satisfy((recuerdos_recientes_deldia(unaNena)), tienen_la_misma_emocion));
+}
+*/
+
+void control_hormonal(NENA * const unaNena)
+{	if((recuerdo_repetido(unaNena)) || recuerdos_son_emocionalmente_iguales(unaNena))
+	{	disminuir_felicidad_en(unaNena,15);
+		perder_pensamientos_centrales_antiguos(unaNena, 3);
+	}
+}
+
+//RESTAURACION COGNITIVA//
+void restauracion_cognitiva(NENA * const unaNena)
+{	unaNena->nivelDeFelicidad= (unaNena->nivelDeFelicidad) + 100;
+}
+
+//LIBERACION DE RECUERDOS DEL DIA ** HAY QUE COMPARAR LAS FECHAS ACTUALES//
+
+

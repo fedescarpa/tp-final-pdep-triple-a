@@ -10,6 +10,7 @@ typedef struct unRecuerdo
 	void * descripcion;
 	float fecha;
 	void * emocionDominanteInstante;
+	int * esCentral;
 } RECUERDO;
 
 typedef struct unaNena 
@@ -19,6 +20,7 @@ typedef struct unaNena
 	t_list * unPrimerRecuerdo;
 	t_list * pensamientosCentrales;
 	t_list * procesos;
+	t_list * memoriaLargoPlazo;
 } NENA;
 
 
