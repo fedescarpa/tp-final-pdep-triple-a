@@ -66,13 +66,15 @@ RECUERDO * recuerdo_create(char * descripcion, char * emocion)
 	}	
 	
 	
-//*METODO VIVIUNEVENTO*//
-void vivi_un_evento (NENA * const unaNena, RECUERDO * unRecuerdo)
-{	list_add((unaNena->pensamientosDelDia), unRecuerdo);
+//*METODO VIVI_UN_EVENTO*//
+void vivi_un_evento (NENA * const unaNena, char * descripcion)
+{	
+	RECUERDO * unRecuerdo = recuerdo_create(descripcion, unaNena->emocionDominante);
+	list_add((unaNena->pensamientosDelDia), unRecuerdo);
 }
 
 
-//*METODO ASENTAUNRECUERDO*//
+//*METODO ASENTA_UN_RECUERDO*//
 void asenta_un_recuerdo (NENA * const unaNena, RECUERDO * unRecuerdo)
 { 	if(unRecuerdo->emocionDominanteInstante == "alegre")
 		{asentar_recuerdo_alegre(unaNena, unRecuerdo);}
@@ -86,18 +88,19 @@ void asenta_un_recuerdo (NENA * const unaNena, RECUERDO * unRecuerdo)
 
 //Conocer los recuerdos recientes del día: estos son los últimos 5 recuerdos//
 
-bool ordenar_recuerdos_porfecha_ascendente(void * dato1, void * dato2)
-{ RECUERDO * recuerdo1= dato1;
-	RECUERDO * recuerdo2= dato2;
+bool ordenar_recuerdos_porfecha_ascendente(RECUERDO * recuerdo1, RECUERDO * recuerdo2)
+{ 
 	return(recuerdo1->fecha > recuerdo2->fecha);
 }
 
-bool ordenar_recuerdos_porfecha_descendente(void * dato1, void * dato2)
-{ RECUERDO * recuerdo1= dato1;
-	RECUERDO * recuerdo2= dato2;
+bool ordenar_recuerdos_porfecha_descendente(RECUERDO * recuerdo1, RECUERDO * recuerdo2)
+{ 
 	return(recuerdo1->fecha < recuerdo2->fecha);
 }
 
+
+
+//	RECUERDOS RECIENTES //
 
 t_list * recuerdos_recientes_deldia(NENA * const unaNena)
 {	ordenar_lista_ascendente(unaNena->pensamientosDelDia);
@@ -106,9 +109,9 @@ t_list * recuerdos_recientes_deldia(NENA * const unaNena)
 	
 //Conocer los pensamientos centrales que sean difíciles de explicar. Un recuerdo es difícil de explicar cuando su descripción tiene más de 10 palabras//
 
-bool recuerdo_dificil_deexplicar(void * data)
+bool recuerdo_dificil_deexplicar(RECUERDO * unRecuerdo)
 {
-	RECUERDO * unRecuerdo= data;
+	
 	return (strlen(unRecuerdo->descripcion)> 10);
 }
 
@@ -166,7 +169,7 @@ void dormir(NENA * const unaNena)
 
 
 
-// ASENTAR RECUERDO //
+// ASENTAR RECUERDOS //
 
 
 void asentar_recuerdos( NENA * const unaNena)
@@ -328,4 +331,3 @@ void liberar_recuerdos_deldia(NENA * const unaNena)
 {	
 	list_clean(unaNena->pensamientosDelDia);
 }
-
