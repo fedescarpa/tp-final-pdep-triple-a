@@ -1,37 +1,6 @@
 #include "intensamenteClases.h"
+#include "funcionesaux.c"
 
-
-void convertir_recuerdo_en_pensamiento_central (NENA * const unaNena, RECUERDO * const unRecuerdo)
-{		list_add((unaNena->pensamientosCentrales), unRecuerdo);
-		int * x;
-		*x= 1;
-		unRecuerdo->esCentral= x;
-}
-
-
-void disminuir_felicidad_en(NENA * unaNena, float coeficiente)
-{
-	unaNena->nivelDeFelicidad= calcularPorcentaje(unaNena->nivelDeFelicidad, coeficiente);
-}
-
-float calcular_porcentaje(float valor1, float valor2)
-{
-	return((valor2*100)/valor1);
- } 
- 
-
-void asentar_recuerdo_alegre(NENA * const unaNena, RECUERDO * unRecuerdo)
-{	if(unaNena->nivelDeFelicidad > 500.00)
-		convertir_recuerdo_en_pensamiento_central(unaNena, unRecuerdo);
-}	
-
-
-void asentar_recuerdo_triste(NENA * const unaNena, RECUERDO * unRecuerdo)
-{
-	convertir_recuerdo_en_pensamiento_central(unaNena, unRecuerdo);
-	disminuirFelicidadEn(unaNena, 10.0);
-	
-}
 
 
 //ASIGNAMOS LISTA A RECUERDOS Y PENSAMIENTOS CENTRALES//
@@ -109,9 +78,9 @@ t_list * recuerdos_recientes_deldia(NENA * const unaNena)
 	
 //Conocer los pensamientos centrales que sean difíciles de explicar. Un recuerdo es difícil de explicar cuando su descripción tiene más de 10 palabras//
 
-bool recuerdo_dificil_deexplicar(RECUERDO * unRecuerdo)
+bool recuerdo_dificil_deexplicar(void * data)
 {
-	
+	RECUERDO *unRecuerdo= data;
 	return (strlen(unRecuerdo->descripcion)> 10);
 }
 
@@ -241,7 +210,7 @@ void profundizar_recuerdos(NENA * const unaNena)
 }
 
 //CONTROL HORMONAL//  
-//								 <-- Modificado unaNena->unPrimerRecuerdo por unaNena->pensamientosCentrales -->
+						
 
 void perder_pensamientos_centrales_antiguos(NENA * const unaNena, int valor)
 	{	int * posicion, contador=1;
@@ -252,7 +221,7 @@ void perder_pensamientos_centrales_antiguos(NENA * const unaNena, int valor)
 		}
 	}
 
-//  <-- Chequear si esta bien (hasta linea 241) -->
+
 bool esta_en_largoplazo(t_list * pensamientosCentrales, t_list * memoriaLargoPlazo)
 {
  t_link_element * element = pensamientosCentrales->head;
@@ -309,9 +278,6 @@ bool recuerdos_son_emocionalmente_iguales(NENA * const unaNena)
 }
 
 
-
-
-
 void control_hormonal(NENA * const unaNena)
 {	if((recuerdo_repetido(unaNena)) || recuerdos_son_emocionalmente_iguales(unaNena))
 	{	disminuir_felicidad_en(unaNena,15);
@@ -324,9 +290,7 @@ void restauracion_cognitiva(NENA * const unaNena)
 {	unaNena->nivelDeFelicidad= (unaNena->nivelDeFelicidad) + 100;
 }
 
-//LIBERACION DE RECUERDOS DEL DIA 	** HAY QUE COMPARAR LAS FECHAS ACTUALES 
-// 									<-- Como que te vas a dormir todos los dias no? -->
-
+//LIBERACION DE RECUERDOS DEL DIA//
 void liberar_recuerdos_deldia(NENA * const unaNena)
 {	
 	list_clean(unaNena->pensamientosDelDia);

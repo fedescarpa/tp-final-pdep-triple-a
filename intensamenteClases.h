@@ -6,6 +6,7 @@
 
 
 
+
 //*DEFINIMOS CLASES*//
 typedef struct unRecuerdo
 {
